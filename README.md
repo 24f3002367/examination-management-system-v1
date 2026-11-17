@@ -1,17 +1,12 @@
-requirements.txt
-Create a file named requirements.txt in your project root and paste these dependencies into it:
+Flask3.0.2
+Flask-SQLAlchemy3.1.1
+Flask-Login0.6.3
+Werkzeug3.0.1
 
-Plaintext
-Flask==3.0.2
-Flask-SQLAlchemy==3.1.1
-Flask-Login==0.6.3
-Werkzeug==3.0.1
-Steps to Start the Project
-Open your terminal inside the project folder and run:
+For Terminal Steps:
+(Paste these line by line into your terminal)
 
-Bash
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 python app.py
-Once running, open your browser and navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000).
