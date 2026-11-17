@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mt-4">
+    <h2>Examiner Dashboard</h2>
+    <hr>
+    <div class="mb-3">
+        <a href="{{ url_for('create_slot') }}" class="btn btn-primary">Create Examination Slot</a>
+        <a href="{{ url_for('evaluate_student') }}" class="btn btn-success">Evaluate Student</a>
+    </div>
+    
+    <h4>Active Examinations</h4>
+    <div class="table-responsive mb-4">
+        <table class="table">
+            <thead><tr><th>Name</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for e in examinations %}
+                <tr><td>{{ e.name }}</td><td>{{ e.exam_type }}</td><td>{{ e.status }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h4>Your Created Slots</h4>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Exam</th><th>Date</th><th>Time</th><th>Available Seats</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for s in slots %}
+                <tr>
+                    <td>{{ s.examination.name }}</td>
+                    <td>{{ s.date }}</td>
+                    <td>{{ s.start_time }} - {{ s.end_time }}</td>
+                    <td>{{ s.available_seats }} / {{ s.capacity }}</td>
+                    <td>{{ s.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

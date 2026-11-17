@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mt-4">
+    <h2>Student Dashboard</h2>
+    <hr>
+    <a href="{{ url_for('student_results') }}" class="btn btn-info mb-3">View Published Results</a>
+    
+    <form method="GET" class="input-group mb-4">
+        <input type="text" name="search" class="form-control" placeholder="Search available examinations..." value="{{ request.args.get('search', '') }}">
+        <button class="btn btn-outline-secondary" type="submit">Filter</button>
+    </form>
+
+    <h4>Available Examinations for Booking</h4>
+    <div class="table-responsive mb-4">
+        <table class="table">
+            <thead><tr><th>Name</th><th>Type</th><th>Duration</th><th>Max Marks</th><th>Action</th></tr></thead>
+            <tbody>
+                {% for exam in available_exams %}
+                <tr>
+                    <td>{{ exam.name }}</td><td>{{ exam.exam_type }}</td><td>{{ exam.duration }} mins</td><td>{{ exam.max_marks }}</td>
+                    <td><a href="{{ url_for('book_slot_page', exam_id=exam.id) }}" class="btn btn-sm btn-primary">Book Slot</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h4>Your Booked Slots</h4>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Examination</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+                {% for b in my_bookings %}
+                <tr>
+                    <td>{{ b.slot.examination.name }}</td>
+                    <td>{{ b.slot.date }}</td>
+                    <td>{{ b.slot.start_time }} - {{ b.slot.end_time }}</td>
+                    <td>{{ b.status }}</td>
+                    <td>
+                        {% if b.status == 'Booked' %}
+                        <a href="{{ url_for('cancel_booking', booking_id=b.id) }}" class="btn btn-danger btn-sm">Cancel</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

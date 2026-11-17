@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mt-4">
+    <h2>Your Examination Results</h2>
+    <hr>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Examination</th>
+                    <th>Criteria Breakdown</th>
+                    <th>Total Marks Obtained</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in completed_bookings %}
+                <tr>
+                    <td>
+                        <strong>{{ b.slot.examination.name }}</strong><br>
+                        <small class="text-muted">Type: {{ b.slot.examination.exam_type }}</small>
+                    </td>
+                    <td>
+                        {% set scores_map = {} %}
+                        {% for score in b.rubric_scores %}
+                            {% set _ = scores_map.update({score.rubric_id: score.marks_awarded}) %}
+                        {% endfor %}
+
+                        <ul class="list-unstyled mb-0">
+                            {% for r in b.slot.examination.rubrics %}
+                            <li>
+                                <strong>{{ r.criterion_name }}:</strong> 
+                                <span class="badge bg-secondary">{{ scores_map.get(r.id, 0) }} / {{ r.max_marks }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td><strong>{{ b.marks }} / {{ b.slot.examination.max_marks }}</strong></td>
+                    <td>{{ b.remarks or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}

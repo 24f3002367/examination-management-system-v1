@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mt-4">
+    <h2>Manage Examinations</h2>
+    <hr>
+    <div class="card p-4 mb-4">
+        <h4>Create Examination & Rubrics</h4>
+        <form method="POST">
+            <div class="mb-3"><label>Course</label>
+                <select name="course_id" class="form-control" required>
+                    {% for c in courses %}
+                    <option value="{{ c.id }}">{{ c.course_code }} - {{ c.course_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3"><label>Exam Name</label><input type="text" name="name" class="form-control" required></div>
+            <div class="mb-3"><label>Exam Type</label>
+                <select name="exam_type" class="form-control" required>
+                    <option value="Viva">Viva</option>
+                    <option value="Practical">Practical</option>
+                    <option value="Project Demo">Project Demo</option>
+                    <option value="Assessment">Assessment</option>
+                </select>
+            </div>
+            <div class="mb-3"><label>Duration (mins)</label><input type="number" name="duration" class="form-control" required></div>
+            <div class="mb-3"><label>Max Marks</label><input type="number" name="max_marks" class="form-control" required></div>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label>Slot Creation Start</label><input type="date" name="slot_creation_start" class="form-control"></div>
+                <div class="col-md-6 mb-3"><label>Slot Creation End</label><input type="date" name="slot_creation_end" class="form-control"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label>Booking Start</label><input type="date" name="booking_start" class="form-control"></div>
+                <div class="col-md-6 mb-3"><label>Booking End</label><input type="date" name="booking_end" class="form-control"></div>
+            </div>
+
+            <hr>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Rubric Criteria</h5>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="addRubricRow()">+ Add Criterion</button>
+            </div>
+            <div id="rubric-container">
+                <div class="row mb-2 rubric-row">
+                    <div class="col-md-4"><input type="text" name="criterion_name[]" class="form-control" placeholder="Criterion Name" required></div>
+                    <div class="col-md-3"><input type="number" name="criterion_max_marks[]" class="form-control" placeholder="Max Marks" required></div>
+                    <div class="col-md-4"><input type="text" name="criterion_desc[]" class="form-control" placeholder="Description"></div>
+                    <div class="col-md-1"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.rubric-row').remove()">X</button></div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Create Exam & Rubrics</button>
+        </form>
+    </div>
+    
+    <h4>Examinations</h4>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for e in examinations %}
+                <tr>
+                    <td>{{e.id}}</td><td>{{ e.name }}</td><td>{{ e.exam_type }}</td><td>{{ e.status }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editModal{{ e.id }}">Update Times</button>
+                        <a href="{{ url_for('update_exam_status', id=e.id, status='Closed') }}" class="btn btn-sm btn-warning">Close</a>
+                    </td>
+                </tr>
+
+                <!-- Modal to Update All 4 Times -->
+                <div class="modal fade" id="editModal{{ e.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="POST" action="{{ url_for('update_exam_times', id=e.id) }}">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Update Times for {{ e.name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3"><label>Slot Creation Start</label><input type="date" name="slot_creation_start" class="form-control" value="{{ e.slot_creation_start }}"></div>
+                                    <div class="mb-3"><label>Slot Creation End</label><input type="date" name="slot_creation_end" class="form-control" value="{{ e.slot_creation_end }}"></div>
+                                    <div class="mb-3"><label>Booking Start</label><input type="date" name="booking_start" class="form-control" value="{{ e.booking_start }}"></div>
+                                    <div class="mb-3"><label>Booking End</label><input type="date" name="booking_end" class="form-control" value="{{ e.booking_end }}"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+
+<script>
+function addRubricRow() {
+    const container = document.getElementById('rubric-container');
+    const row = document.createElement('div');
+    row.className = 'row mb-2 rubric-row';
+    row.innerHTML = `
+        <div class="col-md-4"><input type="text" name="criterion_name[]" class="form-control" placeholder="Criterion Name" required></div>
+        <div class="col-md-3"><input type="number" name="criterion_max_marks[]" class="form-control" placeholder="Max Marks" required></div>
+        <div class="col-md-4"><input type="text" name="criterion_desc[]" class="form-control" placeholder="Description"></div>
+        <div class="col-md-1"><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.rubric-row').remove()">X</button></div>
+    `;
+    container.appendChild(row);
+}
+</script>
+{% endblock %}

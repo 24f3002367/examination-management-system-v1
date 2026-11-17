@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mt-4">
+    <h2>Admin Dashboard</h2>
+    <hr>
+    <div class="row text-center mb-4">
+        <div class="col-md-2"><div class="card p-3 bg-light"><h5>Courses</h5><h3>{{ courses_count }}</h3></div></div>
+        <div class="col-md-2"><div class="card p-3 bg-light"><h5>Examinations</h5><h3>{{ exams_count }}</h3></div></div>
+        <div class="col-md-2"><div class="card p-3 bg-light"><h5>Examiners</h5><h3>{{ examiners_count }}</h3></div></div>
+        <div class="col-md-2"><div class="card p-3 bg-light"><h5>Students</h5><h3>{{ students_count }}</h3></div></div>
+        <div class="col-md-2"><div class="card p-3 bg-light"><h5>Slots</h5><h3>{{ slots_count }}</h3></div></div>
+        <div class="col-md-2"><div class="card p-3 bg-light"><h5>Bookings</h5><h3>{{ bookings_count }}</h3></div></div>
+    </div>
+
+    <div class="mb-3">
+        <a href="{{ url_for('manage_courses') }}" class="btn btn-dark">Manage Courses</a>
+        <a href="{{ url_for('manage_exams') }}" class="btn btn-dark">Manage Examinations</a>
+        <a href="{{ url_for('manage_examiners') }}" class="btn btn-dark">Manage Examiners</a>
+    </div>
+
+    <form method="GET" class="input-group mb-4">
+        <input type="text" name="q" class="form-control" placeholder="Search students, examiners, or exams by name..." value="{{ request.args.get('q', '') }}">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </form>
+
+    <h4>Examinations List</h4>
+    <div class="table-responsive mb-4">
+        <table class="table table-striped">
+            <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for e in examinations %}
+                <tr><td>{{ e.id }}</td><td>{{ e.name }}</td><td>{{ e.exam_type }}</td>
+                    <td>
+                        {{ e.status }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h4>Students List</h4>
+    <div class="table-responsive mb-4">
+        <table class="table table-striped">
+            <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+                {% for s in students %}
+                <tr><td>{{ s.id }}</td><td>{{ s.name }}</td><td>{{ s.email }}</td><td>{{ s.department }}</td><td>{{s.status}}</td>
+                    <td>
+                        {% if s.status != 'deactivated' %}
+                        <a href="{{ url_for('deactivate_student', id=s.id) }}" class="btn btn-danger btn-sm">Deactivate</a>
+                        {% endif %}
+                        {% if s.status == 'deactivated' %}
+                        <a href="{{url_for('approve_student', id = s.id) }}" class="btn btn-success btn-sm">Approve</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

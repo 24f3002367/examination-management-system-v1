@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mt-4">
+    <h2>Manage Examiners</h2>
+    <hr>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Name</th><th>Email</th><th>Contact</th><th>Department</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+                {% for ex in examiners %}
+                <tr>
+                    <td>{{ ex.name }}</td><td>{{ ex.email }}</td><td>{{ ex.contact }}</td><td>{{ ex.department }}</td><td>{{ ex.status }}</td>
+                    <td>
+                        {% if ex.status == 'pending' %}
+                        <a href="{{ url_for('approve_examiner', id=ex.id) }}" class="btn btn-success btn-sm">Approve</a>
+                        {% endif %}
+                        {% if ex.status != 'deactivated' %}
+                        <a href="{{ url_for('deactivate_examiner', id=ex.id) }}" class="btn btn-danger btn-sm">Deactivate</a>
+                        {% endif %}
+                        {% if ex.status == 'deactivated' %}
+                        <a href="{{url_for('approve_examiner', id = ex.id) }}" class="btn btn-success btn-sm">Approve</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3>Create Examination Slot</h3>
+            <form method="POST">
+                <div class="mb-3"><label>Examination</label>
+                    <select name="examination_id" class="form-control" required>
+                        {% for e in examinations %}
+                        <option value="{{ e.id }}">{{ e.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3"><label>Date</label><input type="date" name="date" class="form-control" required></div>
+                <div class="mb-3"><label>Start Time</label><input type="time" name="start_time" class="form-control" required></div>
+                <div class="mb-3"><label>End Time</label><input type="time" name="end_time" class="form-control" required></div>
+                <div class="mb-3"><label>Maximum Capacity</label><input type="number" name="capacity" class="form-control" required></div>
+                <button type="submit" class="btn btn-primary w-100">Create Slot</button>
+            </form>
+            <a href="{{ url_for('examiner_dashboard') }}" class="btn btn-secondary mt-3 w-100">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

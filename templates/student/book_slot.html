@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mt-4">
+    <h2>Book Slot for {{ exam.name }}</h2>
+    <hr>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Examiner</th><th>Date</th><th>Time</th><th>Available Seats</th><th>Action</th></tr></thead>
+            <tbody>
+                {% for s in slots %}
+                <tr>
+                    <td>{{ s.examiner.name }}</td>
+                    <td>{{ s.date }}</td>
+                    <td>{{ s.start_time }} - {{ s.end_time }}</td>
+                    <td>{{ s.available_seats }} / {{ s.capacity }}</td>
+                    <td><a href="{{ url_for('confirm_booking', slot_id=s.id) }}" class="btn btn-success btn-sm">Confirm Booking</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}
